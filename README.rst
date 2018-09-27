@@ -22,6 +22,15 @@ Mumble client library.
 * Free software: MIT license
 * Documentation: https://wspr.readthedocs.io.
 
+Protocol
+--------
+
+* MumbleProto_
+* ProtoBuff_
+
+.. _MumbleProto: https://github.com/mumble-voip/mumble/blob/master/src/Mumble.proto
+.. _ProtoBuff: https://developers.google.com/protocol-buffers/docs/pythontutorial
+
 
 Features
 --------
