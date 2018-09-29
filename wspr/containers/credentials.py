@@ -8,7 +8,7 @@ class Credentials:
     """User login information."""
 
     def __init__(self, name: str = "Anonymous", password: str = "", certificate_file: pathlib.Path = None,
-                 key_file: pathlib.Path = None) -> None:
+                 key_file: pathlib.Path = None):
         """"""
         self.name = name
         self.password = password
