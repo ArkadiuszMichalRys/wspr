@@ -37,6 +37,11 @@ Features
 
 * TODO
 
+Architecture
+------------
+
+.. image:: docs/files/architecture.*
+
 Credits
 -------
 
