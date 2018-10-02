@@ -6,6 +6,7 @@ Current
 -------
 
 * Data structure for user data.
+* Data structure for channel data.
 
 0.0.3 (2018-10-02)
 ------------------
