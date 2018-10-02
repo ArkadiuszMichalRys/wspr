@@ -2,6 +2,7 @@
 
 
 import logging
+import time
 
 
 class Ping:
@@ -24,3 +25,8 @@ class Ping:
         self.delay_milliseconds = min(10 * 1000, 30 * 1000)
         # Time in between pings before we can assume the connection has been lost (milliseconds)
         self.timeout_milliseconds = 60 * 1000
+
+    @staticmethod
+    def __get_current_time_milliseconds() -> int:
+        """"""
+        return int(time.time() * 1000)
