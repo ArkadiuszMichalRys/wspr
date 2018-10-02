@@ -34,3 +34,22 @@ class Ping:
     def update(self) -> None:
         """"""
         self.time_sent = self.__get_current_time_milliseconds()
+
+    def __get_travel_time(self) -> int:
+        """
+        Two-way travel time in milliseconds. (RTT)
+        Time between the packet we send and the response.
+        """
+        return self.time_received - self.time_sent
+
+    def is_needed(self) -> bool:
+        """"""
+        return self.__get_current_time_milliseconds() >= self.time_sent + self.delay_milliseconds
+
+    def has_timed_out(self) -> bool:
+        """Did we get a response to our ping in the last 60 seconds?"""
+        return self.time_received != 0 and self.time_sent > self.time_received + self.timeout_milliseconds
+
+    def __repr__(self) -> str:
+        """"""
+        return "Ping"
