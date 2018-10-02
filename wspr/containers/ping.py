@@ -30,3 +30,7 @@ class Ping:
     def __get_current_time_milliseconds() -> int:
         """"""
         return int(time.time() * 1000)
+
+    def update(self) -> None:
+        """"""
+        self.time_sent = self.__get_current_time_milliseconds()
