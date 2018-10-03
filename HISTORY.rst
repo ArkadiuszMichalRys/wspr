@@ -7,6 +7,7 @@ Current
 
 * Data structure for user data.
 * Data structure for channel data.
+* Data structures for responses from server.
 
 0.0.3 (2018-10-02)
 ------------------
