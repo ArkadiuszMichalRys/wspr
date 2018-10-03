@@ -8,6 +8,7 @@ Current
 * Data structure for user data.
 * Data structure for channel data.
 * Data structures for responses from server.
+* Data structure for tasks received bu whisper.
 
 0.0.3 (2018-10-02)
 ------------------
