@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import select
 import socket
 import ssl
 import struct
@@ -10,9 +11,10 @@ from typing import List, Optional
 from wspr import __version__
 from wspr.containers.address import Address
 from wspr.containers.credentials import Credentials
+from wspr.containers.ping import Ping
 from wspr.exceptions.connection import AlreadyConnectedError
 from wspr.protocol.packet_type import PacketType
-from wspr.protocol.packets import VersionPacket, AuthenticatePacket
+from wspr.protocol.packets import Packet, VersionPacket, AuthenticatePacket, PingPacket
 
 
 class ConnectionState(enum.Enum):
@@ -40,6 +42,7 @@ class Connection:
         self.state: ConnectionState = ConnectionState.NOT_CONNECTED
         self.control_socket: Optional[socket.socket] = None
         self.media_socket: Optional[socket.socket] = None
+        self.ping: Ping = Ping()
         self.udp_active: bool = False
         self.receive_buffer: bytes = bytes()
         # How many bytes to read at a time from the control address, in bytes
@@ -145,12 +148,49 @@ class Connection:
                 raise socket.error("Server connection error")
             pack = pack[sent:]
 
+    def incoming_packets(self) -> [Packet]:
+        """"""
+        # Wait for incoming messages
+        rlist, _, _ = select.select([self.control_socket], [], [self.control_socket], self.rate)
+        # We are ready for reading
+        if self.control_socket in rlist:
+            self.read_buffer()
+            self.receive_buffer, packets = self.converter.buffer_to_packets(self.receive_buffer)
+            return packets
+        return []
+
     def read_buffer(self) -> None:
         """Grab messages from the buffer."""
         try:
             self.receive_buffer += self.control_socket.recv(self.read_buffer_size)
         except socket.error:
             self._logger.error("Could not read socket data")
+
+    def send_ping(self) -> None:
+        """Send keep-alive packet."""
+        # Send a ping packet from time to time
+        if not self.ping.is_needed():
+            return
+        self._logger.debug("Sending ping packet")
+        # Send message with current ping data
+        pack = PingPacket.from_info(self.ping.average, self.ping.variance, self.ping.amount_of_data_points).get_full()
+        self.send(*pack)
+        # Store data for analysis
+        self.ping.update()
+        # We might have lost connection to the server if we didn't receive a ping for a minute
+        if self.ping.has_timed_out():
+            self._logger.warning("Disconnecting because of ping timeout")
+            self.close()
+
+    def incoming_ping(self) -> None:
+        """Handle incoming ping packets."""
+        self._logger.debug("Responding to ping")
+        # Remember when the last ping packet came in
+        self.ping.received()
+
+    # def is_alive(self):
+    #     """"""
+    #     return self.state in (ConnectionState.CONNECTED, ConnectionState.AUTHENTICATING)
 
     def is_connected(self) -> bool:
         """"""
