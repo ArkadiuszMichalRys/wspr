@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
-
+import time
 from typing import List, Tuple
 
 from wspr.containers.credentials import Credentials
+from wspr.control.responses import PingReceivedResponse
 from wspr.protocol.mumble_pb2 import (
     Version,
     Authenticate,
+    Ping,
 )
 from wspr.protocol.packet_type import PacketType
 
@@ -50,3 +52,24 @@ class AuthenticatePacket(Packet):
 
     def get_full(self) -> Tuple[PacketType, Authenticate]:
         return PacketType.AUTHENTICATE, self.packet
+
+
+class PingPacket(Packet):
+    def __init__(self, packet):
+        super().__init__(packet)
+
+    def handle(self, c, r):
+        r.put(PingReceivedResponse(self.packet))
+        c.incoming_ping()
+
+    @classmethod
+    def from_info(cls, average, variance, nb):
+        packet = Ping()
+        packet.timestamp = int(time.time())
+        packet.tcp_ping_avg = average
+        packet.tcp_ping_var = variance
+        packet.tcp_packets = nb
+        return cls(packet)
+
+    def get_full(self) -> Tuple[PacketType, Ping]:
+        return PacketType.PING, self.packet
