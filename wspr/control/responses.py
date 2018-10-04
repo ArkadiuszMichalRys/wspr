@@ -7,3 +7,11 @@ class Response:
     def __init__(self, packet):
         """Contains packet which triggered response."""
         self.packet = packet
+
+
+class PingReceivedResponse(Response):
+    """"""
+
+    def __init__(self, packet):
+        """"""
+        super().__init__(packet)
