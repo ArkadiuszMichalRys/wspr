@@ -3,7 +3,7 @@ import time
 from typing import List, Tuple
 
 from wspr.containers.credentials import Credentials
-from wspr.control.responses import PingReceivedResponse
+from wspr.control.events import PingReceivedEvent
 from wspr.protocol.mumble_pb2 import (
     Version,
     Authenticate,
@@ -64,7 +64,7 @@ class PingPacket(Packet):
         super().__init__(packet)
 
     def handle(self, c, r):
-        r.put(PingReceivedResponse(self.packet))
+        r.put(PingReceivedEvent(self.packet))
         c.incoming_ping()
 
     @classmethod

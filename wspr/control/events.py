@@ -3,7 +3,7 @@
 from wspr.protocol.mumble_pb2 import Version, Authenticate, TextMessage
 
 
-class Response:
+class Event:
     """A response from whisper notifying the user some event occurred."""
 
     def __init__(self, packet):
@@ -11,7 +11,7 @@ class Response:
         self.packet = packet
 
 
-class VersionReceivedResponse(Response):
+class VersionReceivedEvent(Event):
     def __init__(self, packet):
         # for field, value in packet.ListFields():
         #     setattr(self, field.name, value)
@@ -31,7 +31,7 @@ class VersionReceivedResponse(Response):
         return "{} - {} - {} - {}".format(v.version, v.release, v.os, v.os_version)
 
 
-class UDPTunnelReceivedResponse(Response):
+class UDPTunnelReceivedEvent(Event):
     def __init__(self, packet):
         super().__init__(packet)
 
@@ -40,7 +40,7 @@ class UDPTunnelReceivedResponse(Response):
         # self.packet = mumble_pb2.UDPTunnel().ParseFromString(packet)
 
 
-class AuthenticateReceivedResponse(Response):
+class AuthenticateReceivedEvent(Event):
     def __init__(self, packet):
         super().__init__(packet)
 
@@ -49,7 +49,7 @@ class AuthenticateReceivedResponse(Response):
         auth.ParseFromString(self.packet)
 
 
-class PingReceivedResponse(Response):
+class PingReceivedEvent(Event):
     """"""
 
     def __init__(self, packet):
@@ -57,7 +57,7 @@ class PingReceivedResponse(Response):
         super().__init__(packet)
 
 
-class RejectReceivedResponse(Response):
+class RejectReceivedEvent(Event):
     """"""
 
     def __init__(self, packet):
@@ -65,37 +65,37 @@ class RejectReceivedResponse(Response):
         super().__init__(packet)
 
 
-class ServerSyncReceivedResponse(Response):
+class ServerSyncReceivedEvent(Event):
     def __init__(self, packet):
         super().__init__(packet)
 
 
-class ChannelRemoveReceivedResponse(Response):
+class ChannelRemoveReceivedEvent(Event):
     def __init__(self, packet):
         super().__init__(packet)
 
 
-class ChannelStateReceivedResponse(Response):
+class ChannelStateReceivedEvent(Event):
     def __init__(self, packet):
         super().__init__(packet)
 
 
-class UserRemoveReceivedResponse(Response):
+class UserRemoveReceivedEvent(Event):
     def __init__(self, packet):
         super().__init__(packet)
 
 
-class UserStateReceivedResponse(Response):
+class UserStateReceivedEvent(Event):
     def __init__(self, packet):
         super().__init__(packet)
 
 
-class BanListReceivedResponse(Response):
+class BanListReceivedEvent(Event):
     def __init__(self, packet):
         super().__init__(packet)
 
 
-class TextMessageReceivedResponse(Response):
+class TextMessageReceivedEvent(Event):
     def __init__(self, packet):
         super().__init__(packet)
 
@@ -114,77 +114,77 @@ class TextMessageReceivedResponse(Response):
         return f"{m.message}"
 
 
-class PermissionDeniedReceivedResponse(Response):
+class PermissionDeniedReceivedEvent(Event):
     def __init__(self, packet):
         super().__init__(packet)
 
 
-class ACLReceivedResponse(Response):
+class ACLReceivedEvent(Event):
     def __init__(self, packet):
         super().__init__(packet)
 
 
-class QueryUsersReceivedResponse(Response):
+class QueryUsersReceivedEvent(Event):
     def __init__(self, packet):
         super().__init__(packet)
 
 
-class CryptSetupReceivedResponse(Response):
+class CryptSetupReceivedEvent(Event):
     def __init__(self, packet):
         super().__init__(packet)
 
 
-class ContextActionModifyReceivedResponse(Response):
+class ContextActionModifyReceivedEvent(Event):
     def __init__(self, packet):
         super().__init__(packet)
 
 
-class ContextActionReceivedResponse(Response):
+class ContextActionReceivedEvent(Event):
     def __init__(self, packet):
         super().__init__(packet)
 
 
-class UserListReceivedResponse(Response):
+class UserListReceivedEvent(Event):
     def __init__(self, packet):
         super().__init__(packet)
 
 
-class VoiceTargetReceivedResponse(Response):
+class VoiceTargetReceivedEvent(Event):
     def __init__(self, packet):
         super().__init__(packet)
 
 
-class PermissionQueryReceivedResponse(Response):
+class PermissionQueryReceivedEvent(Event):
     def __init__(self, packet):
         super().__init__(packet)
 
 
-class CodecVersionReceivedResponse(Response):
+class CodecVersionReceivedEvent(Event):
     def __init__(self, packet):
         super().__init__(packet)
 
 
-class UserStatsReceivedResponse(Response):
+class UserStatsReceivedEvent(Event):
     def __init__(self, packet):
         super().__init__(packet)
 
 
-class RequestBlobReceivedResponse(Response):
+class RequestBlobReceivedEvent(Event):
     def __init__(self, packet):
         super().__init__(packet)
 
 
-class ServerConfigReceivedResponse(Response):
+class ServerConfigReceivedEvent(Event):
     def __init__(self, packet):
         super().__init__(packet)
 
 
-class SuggestConfigReceivedResponse(Response):
+class SuggestConfigReceivedEvent(Event):
     def __init__(self, packet):
         super().__init__(packet)
 
 
-class FullTreeResponse(Response):
+class FullTreeEvent(Event):
     def __init__(self, channels, users):
         self.channels = channels
         self.users = users
