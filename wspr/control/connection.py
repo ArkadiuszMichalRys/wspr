@@ -192,6 +192,24 @@ class Connection:
         # Remember when the last ping packet came in
         self.ping.received()
 
+    def set_bandwidth_limit(self, bandwidth: int) -> None:
+        """Set maximum allowed outgoing bandwidth the server will accept."""
+        self.bandwidth_limit = bandwidth
+        self._logger.debug("Maximum server bandwidth set to {} bits per second".format(bandwidth))
+        self.update_bandwidth(self.bandwidth)
+
+    def update_bandwidth(self, bandwidth: int) -> None:
+        """Set maximum allowed outgoing bandwidth."""
+        if self.bandwidth_limit is None:
+            self._logger.warning("You should wait for the servers bandwidth limit before trying to set one")
+            return
+        if bandwidth > self.bandwidth_limit:
+            self._logger.info("Bandwidth limited to server maximum [{} vs {}]".format(bandwidth, self.bandwidth_limit))
+            self.bandwidth = self.bandwidth_limit
+        else:
+            self.bandwidth = bandwidth
+        self._logger.debug("Maximum outgoing bandwidth set to {} bits per second".format(self.bandwidth))
+
     # def is_alive(self):
     #     """"""
     #     return self.state in (ConnectionState.CONNECTED, ConnectionState.AUTHENTICATING)
@@ -206,6 +224,10 @@ class Connection:
     def is_authenticating(self) -> bool:
         """"""
         return self.state == ConnectionState.AUTHENTICATING
+
+    # def has_failed(self)-> bool:
+    #     """"""
+    #     return self.state == ConnectionState.FAILED
 
     def __enter__(self) -> 'Connection':
         self.control_socket = self.__get_tcp_socket()
