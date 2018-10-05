@@ -37,6 +37,11 @@ class VersionPacket(Packet):
         return PacketType.VERSION, self.packet
 
 
+class UDPTunnelPacket(Packet):
+    def __init__(self, packet):
+        super().__init__(packet)
+
+
 class AuthenticatePacket(Packet):
     def __init__(self, packet):
         super().__init__(packet)
