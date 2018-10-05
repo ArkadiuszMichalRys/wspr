@@ -7,8 +7,12 @@ Current
 
 * Data structure for user data.
 * Data structure for channel data.
-* Data structures for responses from server.
+* Data structures for events from server.
 * Data structure for tasks received by whisper.
+* Data structure for blobs.
+* More possible exceptions.
+* Incoming packet converter.
+* Logger.
 
 0.0.3 (2018-10-02)
 ------------------
