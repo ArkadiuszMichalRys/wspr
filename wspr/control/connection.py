@@ -12,6 +12,7 @@ from wspr import __version__
 from wspr.containers.address import Address
 from wspr.containers.credentials import Credentials
 from wspr.containers.ping import Ping
+from wspr.control.converter import PacketConverter
 from wspr.exceptions.connection import AlreadyConnectedError
 from wspr.protocol.packet_type import PacketType
 from wspr.protocol.packets import Packet, VersionPacket, AuthenticatePacket, PingPacket
@@ -32,6 +33,9 @@ class Connection:
         """"""
         # Basic logging
         self._logger: logging.Logger = logger
+
+        # Convert raw packets to easily usable formats
+        self.converter: PacketConverter = PacketConverter()
 
         # Login information
         self.address: Address = address
