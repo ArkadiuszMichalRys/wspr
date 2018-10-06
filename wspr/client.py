@@ -30,7 +30,7 @@ class Mumble(multiprocessing.Process):
 
     @classmethod
     def from_config(cls, configuration_file_path: Path):
-        """"""
+        """Get all settings from configuration file."""
         raise NotImplemented
 
     def __init__(self, address: Address, credentials: Credentials, tasks: multiprocessing.Queue,
@@ -52,8 +52,7 @@ class Mumble(multiprocessing.Process):
         super().__init__(name=f"whisper-{credentials.name}")
 
     def __handle_tasks(self, connection=None) -> None:
-        """"""
-        # Process incoming task commands
+        """Process incoming task requests."""
         while not self._tasks.empty():
             task: Task = self._tasks.get()
             if type(task) == StartTask:
@@ -75,7 +74,7 @@ class Mumble(multiprocessing.Process):
                     connection.send(*p)
 
     def __handle_packets(self, c):
-        """"""
+        """Take action depending on incoming packet type."""
         packets: [Packet] = c.incoming_packets()
         for packet in packets:
             self._logger.debug(f"Incoming: {packet}")
@@ -84,18 +83,8 @@ class Mumble(multiprocessing.Process):
             except AttributeError:
                 packet.handle(c, self._results)
 
-    def run(self) -> None:
-        """Start the execution of the process. Will connect to the server and start the main loop."""
-        try:
-            self.__loop()
-        except Exception as ex:
-            self._logger.critical("Error:")
-            self._logger.exception(ex)
-        finally:
-            self._logger.debug("Shutting down")
-
     def __loop(self) -> None:
-        """"""
+        """Continuously react to incoming data."""
         while not self._killed.is_set():
             # Handle tasks before we're connected
             self.__handle_tasks()
@@ -113,3 +102,13 @@ class Mumble(multiprocessing.Process):
                     time.sleep(0.1)
                 self._logger.debug("Main loop ended")
             time.sleep(1)
+
+    def run(self) -> None:
+        """Start the execution of the process. Will connect to the server and start the main loop."""
+        try:
+            self.__loop()
+        except Exception as ex:
+            self._logger.critical("Error:")
+            self._logger.exception(ex)
+        finally:
+            self._logger.debug("Shutting down")

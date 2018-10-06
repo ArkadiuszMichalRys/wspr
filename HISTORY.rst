@@ -5,6 +5,12 @@ History
 Current
 -------
 
+* Add empty/new docstring where needed.
+* More type annotations.
+
+0.0.4 (2018-10-05)
+------------------
+
 * Data structure for user data.
 * Data structure for channel data.
 * Data structures for events from server.

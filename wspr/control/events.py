@@ -12,12 +12,16 @@ class Event:
 
 
 class VersionReceivedEvent(Event):
+    """"""
+
     def __init__(self, packet):
+        """"""
         # for field, value in packet.ListFields():
         #     setattr(self, field.name, value)
         super().__init__(packet)
 
-    def get_version(self):
+    def get_version(self) -> Version:
+        """"""
         # version
         # release
         # os
@@ -26,25 +30,34 @@ class VersionReceivedEvent(Event):
         version.ParseFromString(self.packet)
         return version
 
-    def __repr__(self):
+    def __repr__(self) -> str:
+        """"""
         v = self.get_version()
         return "{} - {} - {} - {}".format(v.version, v.release, v.os, v.os_version)
 
 
 class UDPTunnelReceivedEvent(Event):
+    """"""
+
     def __init__(self, packet):
+        """"""
         super().__init__(packet)
 
     def get_tunnel(self):
+        """"""
         pass
         # self.packet = mumble_pb2.UDPTunnel().ParseFromString(packet)
 
 
 class AuthenticateReceivedEvent(Event):
+    """"""
+
     def __init__(self, packet):
+        """"""
         super().__init__(packet)
 
     def get_authenticate(self):
+        """"""
         auth = Authenticate()
         auth.ParseFromString(self.packet)
 
@@ -66,40 +79,62 @@ class RejectReceivedEvent(Event):
 
 
 class ServerSyncReceivedEvent(Event):
+    """"""
+
     def __init__(self, packet):
+        """"""
         super().__init__(packet)
 
 
 class ChannelRemoveReceivedEvent(Event):
+    """"""
+
     def __init__(self, packet):
+        """"""
         super().__init__(packet)
 
 
 class ChannelStateReceivedEvent(Event):
+    """"""
+
     def __init__(self, packet):
+        """"""
         super().__init__(packet)
 
 
 class UserRemoveReceivedEvent(Event):
+    """"""
+
     def __init__(self, packet):
+        """"""
         super().__init__(packet)
 
 
 class UserStateReceivedEvent(Event):
+    """"""
+
     def __init__(self, packet):
+        """"""
         super().__init__(packet)
 
 
 class BanListReceivedEvent(Event):
+    """"""
+
     def __init__(self, packet):
+        """"""
         super().__init__(packet)
 
 
 class TextMessageReceivedEvent(Event):
+    """"""
+
     def __init__(self, packet):
+        """"""
         super().__init__(packet)
 
     def get_message(self):
+        """"""
         # actor
         # session
         # channel_id
@@ -110,85 +145,132 @@ class TextMessageReceivedEvent(Event):
         return message
 
     def __repr__(self):
+        """"""
         m = self.get_message()
         return f"{m.message}"
 
 
 class PermissionDeniedReceivedEvent(Event):
+    """"""
+
     def __init__(self, packet):
+        """"""
         super().__init__(packet)
 
 
 class ACLReceivedEvent(Event):
+    """"""
+
     def __init__(self, packet):
+        """"""
         super().__init__(packet)
 
 
 class QueryUsersReceivedEvent(Event):
+    """"""
+
     def __init__(self, packet):
+        """"""
         super().__init__(packet)
 
 
 class CryptSetupReceivedEvent(Event):
+    """"""
+
     def __init__(self, packet):
+        """"""
         super().__init__(packet)
 
 
 class ContextActionModifyReceivedEvent(Event):
+    """"""
+
     def __init__(self, packet):
+        """"""
         super().__init__(packet)
 
 
 class ContextActionReceivedEvent(Event):
+    """"""
+
     def __init__(self, packet):
+        """"""
         super().__init__(packet)
 
 
 class UserListReceivedEvent(Event):
+    """"""
+
     def __init__(self, packet):
+        """"""
         super().__init__(packet)
 
 
 class VoiceTargetReceivedEvent(Event):
+    """"""
+
     def __init__(self, packet):
+        """"""
         super().__init__(packet)
 
 
 class PermissionQueryReceivedEvent(Event):
+    """"""
+
     def __init__(self, packet):
+        """"""
         super().__init__(packet)
 
 
 class CodecVersionReceivedEvent(Event):
+    """"""
+
     def __init__(self, packet):
+        """"""
         super().__init__(packet)
 
 
 class UserStatsReceivedEvent(Event):
+    """"""
+
     def __init__(self, packet):
+        """"""
         super().__init__(packet)
 
 
 class RequestBlobReceivedEvent(Event):
+    """"""
+
     def __init__(self, packet):
+        """"""
         super().__init__(packet)
 
 
 class ServerConfigReceivedEvent(Event):
+    """"""
+
     def __init__(self, packet):
+        """"""
         super().__init__(packet)
 
 
 class SuggestConfigReceivedEvent(Event):
+    """"""
+
     def __init__(self, packet):
+        """"""
         super().__init__(packet)
 
 
 class FullTreeEvent(Event):
+    """"""
+
     def __init__(self, channels, users):
+        """"""
         self.channels = channels
         self.users = users
         super().__init__(None)
 
     def __repr__(self):
+        """"""
         return "{} - {}".format(self.channels, self.users)
