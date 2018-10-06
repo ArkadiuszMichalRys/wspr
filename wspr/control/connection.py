@@ -152,25 +152,25 @@ class Connection:
                 raise socket.error("Server connection error")
             pack = pack[sent:]
 
-    def incoming_packets(self) -> [Packet]:
+    def __incoming_packets(self) -> [Packet]:
         """"""
         # Wait for incoming messages
         rlist, _, _ = select.select([self.control_socket], [], [self.control_socket], self.rate)
         # We are ready for reading
         if self.control_socket in rlist:
-            self.read_buffer()
+            self.__read_buffer()
             self.receive_buffer, packets = self.converter.buffer_to_packets(self.receive_buffer)
             return packets
         return []
 
-    def read_buffer(self) -> None:
+    def __read_buffer(self) -> None:
         """Grab messages from the buffer."""
         try:
             self.receive_buffer += self.control_socket.recv(self.read_buffer_size)
         except socket.error:
             self._logger.error("Could not read socket data")
 
-    def send_ping(self) -> None:
+    def __send_ping(self) -> None:
         """Send keep-alive packet."""
         # Send a ping packet from time to time
         if not self.ping.is_needed():
@@ -186,7 +186,7 @@ class Connection:
             self._logger.warning("Disconnecting because of ping timeout")
             self.close()
 
-    def incoming_ping(self) -> None:
+    def __incoming_ping(self) -> None:
         """Handle incoming ping packets."""
         self._logger.debug("Responding to ping")
         # Remember when the last ping packet came in

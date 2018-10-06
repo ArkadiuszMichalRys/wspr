@@ -130,7 +130,7 @@ class PingPacket(Packet):
     def handle(self, c, r):
         """"""
         r.put(PingReceivedEvent(self.packet))
-        c.incoming_ping()
+        c.__incoming_ping()
 
     @classmethod
     def from_info(cls, average, variance, nb):
@@ -312,7 +312,7 @@ class CryptSetupPacket(Packet):
     def handle(self, c, r):
         """"""
         r.put(CryptSetupReceivedEvent(self.packet))
-        c.send_ping()
+        c.__send_ping()
 
 
 class ContextActionModifyPacket(Packet):

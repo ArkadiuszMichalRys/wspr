@@ -75,7 +75,7 @@ class Mumble(multiprocessing.Process):
 
     def __handle_packets(self, c):
         """Take action depending on incoming packet type."""
-        packets: [Packet] = c.incoming_packets()
+        packets: [Packet] = c.__incoming_packets()
         for packet in packets:
             self._logger.debug(f"Incoming: {packet}")
             try:
@@ -96,7 +96,7 @@ class Mumble(multiprocessing.Process):
                     # Handle tasks while connected
                     self.__handle_tasks(c)
                     # Send ping and keep last time
-                    c.send_ping()
+                    c.__send_ping()
                     # Process all incoming packets
                     self.__handle_packets(c)
                     time.sleep(0.1)
