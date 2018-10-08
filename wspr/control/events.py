@@ -20,7 +20,7 @@ class VersionReceivedEvent(Event):
         #     setattr(self, field.name, value)
         super().__init__(packet)
 
-    def get_version(self) -> Version:
+    def get_packet(self) -> Version:
         """"""
         # version
         # release
@@ -32,7 +32,7 @@ class VersionReceivedEvent(Event):
 
     def __repr__(self) -> str:
         """"""
-        v = self.get_version()
+        v = self.get_packet()
         return "{} - {} - {} - {}".format(v.version, v.release, v.os, v.os_version)
 
 
@@ -43,7 +43,7 @@ class UDPTunnelReceivedEvent(Event):
         """"""
         super().__init__(packet)
 
-    def get_tunnel(self):
+    def get_packet(self):
         """"""
         pass
         # self.packet = mumble_pb2.UDPTunnel().ParseFromString(packet)
@@ -56,7 +56,7 @@ class AuthenticateReceivedEvent(Event):
         """"""
         super().__init__(packet)
 
-    def get_authenticate(self):
+    def get_packet(self):
         """"""
         auth = Authenticate()
         auth.ParseFromString(self.packet)
@@ -133,7 +133,7 @@ class TextMessageReceivedEvent(Event):
         """"""
         super().__init__(packet)
 
-    def get_message(self):
+    def get_packet(self):
         """"""
         # actor
         # session
@@ -146,7 +146,7 @@ class TextMessageReceivedEvent(Event):
 
     def __repr__(self):
         """"""
-        m = self.get_message()
+        m = self.get_packet()
         return f"{m.message}"
 
 

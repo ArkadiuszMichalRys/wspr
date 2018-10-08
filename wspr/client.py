@@ -34,12 +34,12 @@ class Mumble(multiprocessing.Process):
         raise NotImplemented
 
     def __init__(self, address: Address, credentials: Credentials, tasks: multiprocessing.Queue,
-                 results: multiprocessing.Queue, logger: logging.Logger):
+                 events: multiprocessing.Queue, logger: logging.Logger):
         """Create a new whisper Mumble thread, ready to connect to the server."""
         # Basic logging
         self._logger: logging.Logger = logger
         self._tasks: multiprocessing.Queue = tasks
-        self._results: multiprocessing.Queue = results
+        self._events: multiprocessing.Queue = events
         self._killed: multiprocessing.Event() = multiprocessing.Event()
 
         self._blobs: defaultdict = defaultdict(Blob)
@@ -63,7 +63,7 @@ class Mumble(multiprocessing.Process):
                 self._logger.debug("Stopping")
                 self._killed.set()
             elif type(task) == FullTreeTask:
-                self._results.put(FullTreeEvent(self._channels, self._users))
+                self._events.put(FullTreeEvent(self._channels, self._users))
             elif type(task) == MessageTask:
                 if connection:
                     p = task.get_packet()
@@ -79,9 +79,9 @@ class Mumble(multiprocessing.Process):
         for packet in packets:
             self._logger.debug(f"Incoming: {packet}")
             try:
-                packet.update(c, self._results, self)
+                packet.update(c, self._events, self)
             except AttributeError:
-                packet.handle(c, self._results)
+                packet.handle(c, self._events)
 
     def __loop(self) -> None:
         """Continuously react to incoming data."""

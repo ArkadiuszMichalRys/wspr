@@ -2,6 +2,7 @@
 
 import logging
 import struct
+from typing import Optional, Tuple, List
 
 from wspr.protocol.packets import (
     Packet,
@@ -69,17 +70,17 @@ class PacketConverter:
             PacketType.SUGGESTCONFIG: self.suggest_config,
         }
 
-    def convert(self, packet_type, packet_content) -> [None, Packet]:
+    def convert(self, packet_type, payload) -> Optional[Packet]:
         """"""
         try:
             dispatch = self._router.get(packet_type)
-            return dispatch(packet_content)
+            return dispatch(payload)
         except KeyError:
             text = "UNHANDLED MESSAGE TYPE: {}, args: {}"
-            self._logger.warning(text.format(packet_type, packet_content))
+            self._logger.warning(text.format(packet_type, payload))
         return None
 
-    def buffer_to_packets(self, buffer):
+    def buffer_to_packets(self, buffer) -> Tuple[bytes, List[Packet]]:
         """Extract packets from buffer."""
         # Header is present (type + length)
         packets = []
@@ -102,106 +103,106 @@ class PacketConverter:
             packets.append(self.convert(packet_type, message))
         return buffer, packets
 
-    def udp_tunnel(self, packet_content):
+    def udp_tunnel(self, payload):
         """"""
-        return UDPTunnelPacket(packet_content)
+        return UDPTunnelPacket(payload)
 
-    def version(self, packet_content):
+    def version(self, payload):
         """"""
-        return VersionPacket(packet_content)
+        return VersionPacket(payload)
 
-    def authenticate(self, packet_content):
+    def authenticate(self, payload):
         """"""
-        return AuthenticatePacket(packet_content)
+        return AuthenticatePacket(payload)
 
-    def ping(self, packet_content):
+    def ping(self, payload):
         """"""
-        return PingPacket(packet_content)
+        return PingPacket(payload)
 
-    def reject(self, packet_content):
+    def reject(self, payload):
         """"""
-        return RejectPacket(packet_content)
+        return RejectPacket(payload)
 
-    def server_sync(self, packet_content):
+    def server_sync(self, payload):
         """"""
-        return ServerSyncPacket(packet_content)
+        return ServerSyncPacket(payload)
 
-    def channel_remove(self, packet_content):
+    def channel_remove(self, payload):
         """"""
-        return ChannelRemovePacket(packet_content)
+        return ChannelRemovePacket(payload)
 
-    def channel_state(self, packet_content):
+    def channel_state(self, payload):
         """"""
-        return ChannelStatePacket(packet_content)
+        return ChannelStatePacket(payload)
 
-    def user_remove(self, packet_content):
+    def user_remove(self, payload):
         """"""
-        return UserRemovePacket(packet_content)
+        return UserRemovePacket(payload)
 
-    def user_state(self, packet_content):
+    def user_state(self, payload):
         """"""
-        return UserStatePacket(packet_content)
+        return UserStatePacket(payload)
 
-    def ban_list(self, packet_content):
+    def ban_list(self, payload):
         """"""
-        return BanListPacket(packet_content)
+        return BanListPacket(payload)
 
-    def text_message(self, packet_content):
+    def text_message(self, payload):
         """"""
-        return TextMessagePacket(packet_content)
+        return TextMessagePacket(payload)
 
-    def permission_denied(self, packet_content):
+    def permission_denied(self, payload):
         """"""
-        return PermissionDeniedPacket(packet_content)
+        return PermissionDeniedPacket(payload)
 
-    def acl(self, packet_content):
+    def acl(self, payload):
         """"""
-        return ACLPacket(packet_content)
+        return ACLPacket(payload)
 
-    def query_users(self, packet_content):
+    def query_users(self, payload):
         """"""
-        return QueryUsersPacket(packet_content)
+        return QueryUsersPacket(payload)
 
-    def crypt_setup(self, packet_content):
+    def crypt_setup(self, payload):
         """"""
-        return CryptSetupPacket(packet_content)
+        return CryptSetupPacket(payload)
 
-    def context_action_modify(self, packet_content):
+    def context_action_modify(self, payload):
         """"""
-        return ContextActionModifyPacket(packet_content)
+        return ContextActionModifyPacket(payload)
 
-    def context_action(self, packet_content):
+    def context_action(self, payload):
         """"""
-        return ContextActionPacket(packet_content)
+        return ContextActionPacket(payload)
 
-    def user_list(self, packet_content):
+    def user_list(self, payload):
         """"""
-        return UserListPacket(packet_content)
+        return UserListPacket(payload)
 
-    def voice_target(self, packet_content):
+    def voice_target(self, payload):
         """"""
-        return VoiceTargetPacket(packet_content)
+        return VoiceTargetPacket(payload)
 
-    def permission_query(self, packet_content):
+    def permission_query(self, payload):
         """"""
-        return PermissionQueryPacket(packet_content)
+        return PermissionQueryPacket(payload)
 
-    def codec_version(self, packet_content):
+    def codec_version(self, payload):
         """"""
-        return CodecVersionPacket(packet_content)
+        return CodecVersionPacket(payload)
 
-    def user_stats(self, packet_content):
+    def user_stats(self, payload):
         """"""
-        return UserListPacket(packet_content)
+        return UserListPacket(payload)
 
-    def request_blob(self, packet_content):
+    def request_blob(self, payload):
         """"""
-        return RequestBlobPacket(packet_content)
+        return RequestBlobPacket(payload)
 
-    def server_config(self, packet_content):
+    def server_config(self, payload):
         """"""
-        return ServerConfigPacket(packet_content)
+        return ServerConfigPacket(payload)
 
-    def suggest_config(self, packet_content):
+    def suggest_config(self, payload):
         """"""
-        return SuggestConfigPacket(packet_content)
+        return SuggestConfigPacket(payload)
