@@ -46,9 +46,9 @@ from wspr.control.events import (
 class Packet:
     """"""
 
-    def __init__(self, packet):
+    def __init__(self, payload):
         """"""
-        self.packet = packet
+        self.payload = payload
 
     def handle(self, c, r):
         """"""
@@ -58,120 +58,120 @@ class Packet:
 class VersionPacket(Packet):
     """"""
 
-    def __init__(self, packet):
+    def __init__(self, payload):
         """"""
-        super().__init__(packet)
+        super().__init__(payload)
 
     @classmethod
     def from_info(cls, application, protocol_version, os_string, os_version_string):
         """"""
-        packet = Version()
-        packet.release = application
-        packet.version = (protocol_version[0] << 16) + (protocol_version[1] << 8) + protocol_version[2]
-        packet.os = os_string
-        packet.os_version = os_version_string
-        return cls(packet)
+        payload = Version()
+        payload.release = application
+        payload.version = (protocol_version[0] << 16) + (protocol_version[1] << 8) + protocol_version[2]
+        payload.os = os_string
+        payload.os_version = os_version_string
+        return cls(payload)
 
     def handle(self, c, r):
         """"""
-        r.put(VersionReceivedEvent(self.packet))
+        r.put(VersionReceivedEvent(self.payload))
 
     def get_full(self) -> Tuple[PacketType, Version]:
         """"""
-        return PacketType.VERSION, self.packet
+        return PacketType.VERSION, self.payload
 
 
 class UDPTunnelPacket(Packet):
     """"""
 
-    def __init__(self, packet):
+    def __init__(self, payload):
         """"""
-        super().__init__(packet)
+        super().__init__(payload)
 
     def handle(self, c, r):
         """"""
-        r.put(UDPTunnelReceivedEvent(self.packet))
-        # sound_received(self.packet)
+        r.put(UDPTunnelReceivedEvent(self.payload))
+        # sound_received(self.payload)
 
 
 class AuthenticatePacket(Packet):
     """"""
 
-    def __init__(self, packet):
+    def __init__(self, payload):
         """"""
-        super().__init__(packet)
+        super().__init__(payload)
 
     @classmethod
     def from_info(cls, credentials: Credentials, tokens: List):
         """"""
-        packet = Authenticate()
-        packet.username = credentials.name
-        packet.password = credentials.password
-        packet.tokens.extend(tokens)
-        packet.opus = True
-        return cls(packet)
+        payload = Authenticate()
+        payload.username = credentials.name
+        payload.password = credentials.password
+        payload.tokens.extend(tokens)
+        payload.opus = True
+        return cls(payload)
 
     def handle(self, c, r):
         """"""
-        r.put(AuthenticateReceivedEvent(self.packet))
+        r.put(AuthenticateReceivedEvent(self.payload))
 
     def get_full(self) -> Tuple[PacketType, Authenticate]:
         """"""
-        return PacketType.AUTHENTICATE, self.packet
+        return PacketType.AUTHENTICATE, self.payload
 
 
 class PingPacket(Packet):
     """"""
 
-    def __init__(self, packet):
+    def __init__(self, payload):
         """"""
-        super().__init__(packet)
+        super().__init__(payload)
 
     def handle(self, c, r):
         """"""
-        r.put(PingReceivedEvent(self.packet))
+        r.put(PingReceivedEvent(self.payload))
         c.__incoming_ping()
 
     @classmethod
     def from_info(cls, average, variance, nb):
         """"""
-        packet = Ping()
-        packet.timestamp = int(time.time())
-        packet.tcp_ping_avg = average
-        packet.tcp_ping_var = variance
-        packet.tcp_packets = nb
-        return cls(packet)
+        payload = Ping()
+        payload.timestamp = int(time.time())
+        payload.tcp_ping_avg = average
+        payload.tcp_ping_var = variance
+        payload.tcp_packets = nb
+        return cls(payload)
 
     def get_full(self) -> Tuple[PacketType, Ping]:
         """"""
-        return PacketType.PING, self.packet
+        return PacketType.PING, self.payload
 
 
 class RejectPacket(Packet):
     """"""
 
-    def __init__(self, packet):
+    def __init__(self, payload):
         """"""
-        super().__init__(packet)
+        super().__init__(payload)
 
     def handle(self, c, r):
         """"""
-        r.put(RejectReceivedEvent(self.packet))
-        raise ConnectionRejectedError(self.packet.reason)
+        r.put(RejectReceivedEvent(self.payload))
+        raise ConnectionRejectedError(self.payload.reason)
 
 
 class ServerSyncPacket(Packet):
     """"""
 
-    def __init__(self, packet):
+    def __init__(self, payload):
         """"""
-        super().__init__(packet)
+        super().__init__(payload)
 
     def handle(self, c, r):
         """"""
-        r.put(ServerSyncReceivedEvent(self.packet))
+        r.put(ServerSyncReceivedEvent(self.payload))
         # self._connection.current_users.set_my(mess.session)
-        # c.set_bandwidth_limit(self.packet.max_bandwidth)
+        # c.set_bandwidth_limit(self.payload.max_bandwidth)
         if c.is_authenticating():
             c.set_connected()
 
@@ -179,45 +179,45 @@ class ServerSyncPacket(Packet):
 class ChannelRemovePacket(Packet):
     """"""
 
-    def __init__(self, packet):
+    def __init__(self, payload):
         """"""
-        super().__init__(packet)
+        super().__init__(payload)
 
     def handle(self, c, r):
         """"""
-        r.put(ChannelRemoveReceivedEvent(self.packet))
+        r.put(ChannelRemoveReceivedEvent(self.payload))
         # self._mumble.channels.remove(message.channel_id)
 
 
 class ChannelStatePacket(Packet):
     """"""
 
-    def __init__(self, packet):
+    def __init__(self, payload):
         """"""
-        super().__init__(packet)
+        super().__init__(payload)
 
     def handle(self, c, r):
         """"""
-        r.put(ChannelStateReceivedEvent(self.packet))
+        r.put(ChannelStateReceivedEvent(self.payload))
 
     def update(self, c, r, whisper):
         """"""
         self.handle(c, r)
         cs = ChannelState()
-        cs.ParseFromString(self.packet)
+        cs.ParseFromString(self.payload)
         whisper._channels[cs.channel_id].update(cs)
 
 
 class UserRemovePacket(Packet):
     """"""
 
-    def __init__(self, packet):
+    def __init__(self, payload):
         """"""
-        super().__init__(packet)
+        super().__init__(payload)
 
     def handle(self, c, r):
         """"""
-        r.put(UserRemoveReceivedEvent(self.packet))
+        r.put(UserRemoveReceivedEvent(self.payload))
         # information = mumble_pb2.UserRemove()
         # information.ParseFromString(args)
         # self._mumble.users.remove(information)
@@ -226,211 +226,211 @@ class UserRemovePacket(Packet):
 class UserStatePacket(Packet):
     """"""
 
-    def __init__(self, packet):
+    def __init__(self, payload):
         """"""
-        super().__init__(packet)
+        super().__init__(payload)
 
     def handle(self, c, r):
         """"""
-        r.put(UserStateReceivedEvent(self.packet))
+        r.put(UserStateReceivedEvent(self.payload))
 
     def update(self, c, r, whisper):
         """"""
         self.handle(c, r)
         us = UserState()
-        us.ParseFromString(self.packet)
+        us.ParseFromString(self.payload)
         whisper._users[us.session].update(us)
 
 
 class BanListPacket(Packet):
     """"""
 
-    def __init__(self, packet):
+    def __init__(self, payload):
         """"""
-        super().__init__(packet)
+        super().__init__(payload)
 
     def handle(self, c, r):
         """"""
-        r.put(BanListReceivedEvent(self.packet))
+        r.put(BanListReceivedEvent(self.payload))
 
 
 class TextMessagePacket(Packet):
     """"""
 
-    def __init__(self, packet):
+    def __init__(self, payload):
         """"""
-        super().__init__(packet)
+        super().__init__(payload)
 
     def handle(self, c, r):
         """"""
-        r.put(TextMessageReceivedEvent(self.packet))
+        r.put(TextMessageReceivedEvent(self.payload))
 
 
 class PermissionDeniedPacket(Packet):
     """"""
 
-    def __init__(self, packet):
+    def __init__(self, payload):
         """"""
-        super().__init__(packet)
+        super().__init__(payload)
 
     def handle(self, c, r):
         """"""
-        r.put(PermissionDeniedReceivedEvent(self.packet))
+        r.put(PermissionDeniedReceivedEvent(self.payload))
 
 
 class ACLPacket(Packet):
     """"""
 
-    def __init__(self, packet):
+    def __init__(self, payload):
         """"""
-        super().__init__(packet)
+        super().__init__(payload)
 
     def handle(self, c, r):
         """"""
-        r.put(ACLReceivedEvent(self.packet))
+        r.put(ACLReceivedEvent(self.payload))
 
 
 class QueryUsersPacket(Packet):
     """"""
 
-    def __init__(self, packet):
+    def __init__(self, payload):
         """"""
-        super().__init__(packet)
+        super().__init__(payload)
 
     def handle(self, c, r):
         """"""
-        r.put(QueryUsersReceivedEvent(self.packet))
+        r.put(QueryUsersReceivedEvent(self.payload))
 
 
 class CryptSetupPacket(Packet):
     """"""
 
-    def __init__(self, packet):
+    def __init__(self, payload):
         """"""
-        super().__init__(packet)
+        super().__init__(payload)
 
     def handle(self, c, r):
         """"""
-        r.put(CryptSetupReceivedEvent(self.packet))
+        r.put(CryptSetupReceivedEvent(self.payload))
         c.__send_ping()
 
 
 class ContextActionModifyPacket(Packet):
     """"""
 
-    def __init__(self, packet):
+    def __init__(self, payload):
         """"""
-        super().__init__(packet)
+        super().__init__(payload)
 
     def handle(self, c, r):
         """"""
-        r.put(ContextActionModifyReceivedEvent(self.packet))
+        r.put(ContextActionModifyReceivedEvent(self.payload))
 
 
 class ContextActionPacket(Packet):
     """"""
 
-    def __init__(self, packet):
+    def __init__(self, payload):
         """"""
-        super().__init__(packet)
+        super().__init__(payload)
 
     def handle(self, c, r):
         """"""
-        r.put(ContextActionReceivedEvent(self.packet))
+        r.put(ContextActionReceivedEvent(self.payload))
 
 
 class UserListPacket(Packet):
     """"""
 
-    def __init__(self, packet):
+    def __init__(self, payload):
         """"""
-        super().__init__(packet)
+        super().__init__(payload)
 
     def handle(self, c, r):
         """"""
-        r.put(UserListReceivedEvent(self.packet))
+        r.put(UserListReceivedEvent(self.payload))
 
 
 class VoiceTargetPacket(Packet):
     """"""
 
-    def __init__(self, packet):
+    def __init__(self, payload):
         """"""
-        super().__init__(packet)
+        super().__init__(payload)
 
     def handle(self, c, r):
         """"""
-        r.put(VoiceTargetReceivedEvent(self.packet))
+        r.put(VoiceTargetReceivedEvent(self.payload))
 
 
 class PermissionQueryPacket(Packet):
     """"""
 
-    def __init__(self, packet):
+    def __init__(self, payload):
         """"""
-        super().__init__(packet)
+        super().__init__(payload)
 
     def handle(self, c, r):
         """"""
-        r.put(PermissionQueryReceivedEvent(self.packet))
+        r.put(PermissionQueryReceivedEvent(self.payload))
 
 
 class CodecVersionPacket(Packet):
     """"""
 
-    def __init__(self, packet):
+    def __init__(self, payload):
         """"""
-        super().__init__(packet)
+        super().__init__(payload)
 
     def handle(self, c, r):
         """"""
-        r.put(CodecVersionReceivedEvent(self.packet))
+        r.put(CodecVersionReceivedEvent(self.payload))
         # self._connection.sound_output.set_default_codec(mess)
 
 
 class UserStatsPacket(Packet):
     """"""
 
-    def __init__(self, packet):
+    def __init__(self, payload):
         """"""
-        super().__init__(packet)
+        super().__init__(payload)
 
     def handle(self, c, r):
         """"""
-        r.put(UserStatsReceivedEvent(self.packet))
+        r.put(UserStatsReceivedEvent(self.payload))
 
 
 class RequestBlobPacket(Packet):
     """"""
 
-    def __init__(self, packet):
+    def __init__(self, payload):
         """"""
-        super().__init__(packet)
+        super().__init__(payload)
 
     def handle(self, c, r):
         """"""
-        r.put(RequestBlobReceivedEvent(self.packet))
+        r.put(RequestBlobReceivedEvent(self.payload))
 
 
 class ServerConfigPacket(Packet):
     """"""
 
-    def __init__(self, packet):
+    def __init__(self, payload):
         """"""
-        super().__init__(packet)
+        super().__init__(payload)
 
     def handle(self, c, r):
         """"""
-        r.put(ServerConfigReceivedEvent(self.packet))
+        r.put(ServerConfigReceivedEvent(self.payload))
 
 
 class SuggestConfigPacket(Packet):
     """"""
 
-    def __init__(self, packet):
+    def __init__(self, payload):
         """"""
-        super().__init__(packet)
+        super().__init__(payload)
 
     def handle(self, c, r):
         """"""
-        r.put(SuggestConfigReceivedEvent(self.packet))
+        r.put(SuggestConfigReceivedEvent(self.payload))
