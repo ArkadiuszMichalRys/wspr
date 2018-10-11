@@ -52,7 +52,7 @@ class MessageTask(Task):
         self.message = message
         super().__init__()
 
-    def get_packet(self):
+    def get_payload(self):
         """"""
         # TODO
         p = TextMessage()
@@ -70,7 +70,7 @@ class PrivateMessageCommand(MessageTask):
         self.message = message
         super().__init__(message)
 
-    def get_packet(self):
+    def get_payload(self):
         """"""
         # TODO
         p = TextMessage()
@@ -89,7 +89,7 @@ class MoveTask(Task):
         self.channel = channel
         super().__init__()
 
-    def get_packet(self):
+    def get_payload(self):
         """"""
         # TODO
         p = TextMessage()
